@@ -181,12 +181,23 @@ class MusicBot extends Client {
     const dbOptions = {
       useNewUrlParser: true,
       autoIndex: false,
-      connectTimeoutMS: 10000,
+      connectTimeoutMS: 30000,
       family: 4,
       useUnifiedTopology: true,
+      serverSelectionTimeoutMS: 30000,
+      heartbeatFrequencyMS: 10000,
+      retryWrites: true,
+      retryReads: true,
     };
-    await connect(this.config.mongourl, dbOptions);
-    this.logger.log('[DB] DATABASE CONNECTED', 'ready');
+
+    try {
+      await connect(this.config.mongourl, dbOptions);
+      this.logger.log('[DB] DATABASE CONNECTED', 'ready');
+    } catch (error) {
+      this.logger.log(`[DB] CONNECTION ERROR: ${error.message}`, 'error');
+      // Continue running the bot even if DB connection fails
+      this.logger.log('[DB] Running without database functionality', 'warn');
+    }
   }
   connect() {
     return super.login(this.token);
