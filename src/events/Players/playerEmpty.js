@@ -83,7 +83,13 @@ module.exports = {
         .get('message')
         .delete()
         .catch(() => null);
-    const TwoFourSeven = await db2.findOne({ Guild: player.guild });
+    // Check for 24/7 mode with proper error handling
+    let TwoFourSeven;
+    try {
+      TwoFourSeven = await db2.findOne({ Guild: player.guild });
+    } catch (error) {
+      client.logger.log(`Error finding 24/7 settings: ${error.message}`, 'error');
+    }
 
     if (TwoFourSeven) {
       return client.channels.cache

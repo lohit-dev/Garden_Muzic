@@ -77,15 +77,25 @@ module.exports = {
       data.Enabled = true;
       await data.save();
 
-      // Enable 24/7 mode if not already enabled
-      let data247 = await db247.findOne({ Guild: message.guild.id });
-      if (!data247) {
-        data247 = new db247({
-          Guild: player.guild,
-          TextId: player.text,
-          VoiceId: player.voice,
-        });
-        await data247.save();
+      // Enable 24/7 mode if not already enabled with proper error handling
+      try {
+        let data247 = await db247.findOne({ Guild: message.guild.id });
+        if (!data247) {
+          // Make sure all required fields are present
+          if (!player.guild || !player.text || !player.voice) {
+            console.error('Missing required fields for 24/7 mode');
+            console.log('Guild:', player.guild, 'TextId:', player.text, 'VoiceId:', player.voice);
+          } else {
+            data247 = new db247({
+              Guild: player.guild,
+              TextId: player.text,
+              VoiceId: player.voice,
+            });
+            await data247.save();
+          }
+        }
+      } catch (error) {
+        console.error('Error saving 24/7 settings:', error.message);
       }
 
       // Start playing the default playlist if queue is empty
@@ -128,15 +138,25 @@ module.exports = {
       await data.save();
     }
 
-    // Enable 24/7 mode
-    let data247 = await db247.findOne({ Guild: message.guild.id });
-    if (!data247) {
-      data247 = new db247({
-        Guild: player.guild,
-        TextId: player.text,
-        VoiceId: player.voice,
-      });
-      await data247.save();
+    // Enable 24/7 mode with proper error handling
+    try {
+      let data247 = await db247.findOne({ Guild: message.guild.id });
+      if (!data247) {
+        // Make sure all required fields are present
+        if (!player.guild || !player.text || !player.voice) {
+          console.error('Missing required fields for 24/7 mode');
+          console.log('Guild:', player.guild, 'TextId:', player.text, 'VoiceId:', player.voice);
+        } else {
+          data247 = new db247({
+            Guild: player.guild,
+            TextId: player.text,
+            VoiceId: player.voice,
+          });
+          await data247.save();
+        }
+      }
+    } catch (error) {
+      console.error('Error saving 24/7 settings:', error.message);
     }
 
     // Start playing the playlist immediately
