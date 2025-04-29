@@ -24,6 +24,8 @@ module.exports = {
           for (const track of result.tracks) {
             player.queue.add(track);
           }
+          // Set the player to loop the queue automatically
+          await player.setLoop('queue');
           player.play();
 
           client.channels.cache
@@ -33,7 +35,7 @@ module.exports = {
                 new MessageEmbed()
                   .setColor(client.embedColor)
                   .setDescription(
-                    `Queue ended. Playing default playlist with ${result.tracks.length} tracks.`
+                    `Queue ended. Playing default playlist with ${result.tracks.length} tracks in loop mode.`
                   )
                   .setTimestamp(),
               ],

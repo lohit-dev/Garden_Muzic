@@ -195,6 +195,9 @@ module.exports = {
       // Add all tracks at once for better performance
       player.queue.add(result.tracks);
 
+      // Set the player to loop the queue automatically
+      await player.setLoop('queue');
+
       if (!player.playing) {
         player.play();
       } else {
@@ -206,7 +209,7 @@ module.exports = {
           new MessageEmbed()
             .setColor(client.embedColor)
             .setDescription(
-              `Default playlist set and 24/7 mode enabled. Added ${result.tracks.length} tracks to the queue.`
+              `Default playlist set and 24/7 mode enabled. Added ${result.tracks.length} tracks to the queue in loop mode.`
             ),
         ],
       });
