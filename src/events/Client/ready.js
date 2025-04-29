@@ -1,4 +1,5 @@
-const { prefix } = require('../../config.js');
+// Use environment variable instead of config.js
+const prefix = process.env.PREFIX || '!';
 
 module.exports = {
   name: 'ready',
