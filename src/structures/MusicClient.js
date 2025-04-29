@@ -57,9 +57,9 @@ class MusicBot extends Client {
     const spotifyOptions = {
       clientId: this.config.SpotifyID,
       clientSecret: this.config.SpotifySecret,
-      playlistPageLimit: 1, // optional
-      albumPageLimit: 1, // optional
-      searchLimit: 10, // optional
+      playlistPageLimit: 1,
+      albumPageLimit: 1,
+      searchLimit: 10,
     };
 
     // Create nodes array from environment variables
