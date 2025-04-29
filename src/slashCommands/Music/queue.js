@@ -36,14 +36,15 @@ module.exports = {
 
     const player = client.manager.players.get(interaction.guildId);
 
-    if (!player.queue)
+    if (!player || !player.current)
       return await interaction
         .editReply({
           content: 'Nothing is playing right now.',
         })
         .catch(() => {});
 
-    if (player.queue.length === '0' || !player.queue.length) {
+    // Check if queue is empty
+    if (!player.queue || player.queue.length === 0) {
       const embed = new MessageEmbed()
         .setColor(client.embedColor)
         .setDescription(

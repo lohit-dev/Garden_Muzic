@@ -27,7 +27,8 @@ module.exports = {
         ],
       });
 
-    if (player.queue.length === '0' || !player.queue.length) {
+    // Check if queue is empty
+    if (!player.queue || player.queue.length === 0) {
       const embed = new MessageEmbed()
         .setColor(client.embedColor)
         .setDescription(

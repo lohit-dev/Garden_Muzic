@@ -50,7 +50,7 @@ module.exports = {
       voiceId: message.member.voice.channel.id,
       textId: message.channel.id,
       deaf: true,
-      volume: 80, // Set default volume to 80%
+      volume: 80,
     });
 
     // Use the search method with requester option to properly track who requested the song
