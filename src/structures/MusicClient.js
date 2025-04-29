@@ -23,7 +23,25 @@ class MusicBot extends Client {
     });
     this.commands = new Collection();
     this.slashCommands = new Collection();
-    this.config = require('../config.js');
+    // Use environment variables instead of config.js
+    this.config = {
+      token: process.env.TOKEN,
+      prefix: process.env.PREFIX || '!',
+      ownerID: process.env.OWNERID,
+      SpotifyID: process.env.SPOTIFYID,
+      SpotifySecret: process.env.SPOTIFYSECRET,
+      mongourl: process.env.MONGO_URI,
+      embedColor: process.env.COLOR || '#FFC0CB',
+      links: {
+        support: process.env.SUPPORT || 'https://discord.com/invite/kqMBgeAKAh',
+        invite:
+          process.env.INVITE ||
+          'https://discord.com/oauth2/authorize?client_id=1346373653830565909',
+        bg:
+          process.env.BG ||
+          'https://docs.garden.finance/assets/files/garden_horizontal_white-ea7a2e55885e34b2a9fe47038f5a7f43.svg',
+      },
+    };
     this.owner = this.config.ownerID;
     this.prefix = this.config.prefix;
     this.embedColor = this.config.embedColor;
