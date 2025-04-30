@@ -13,19 +13,19 @@ module.exports = {
     // Safety check to ensure current doesn't exceed total and isn't negative
     if (current > total) current = total;
     if (current < 0) current = 0;
-    
+
     // Ensure total is at least 1 to avoid division by zero
     if (total <= 0) total = 1;
 
     // Calculate percentage of song played
     const percent = current / total;
-    
+
     // Calculate how many characters of the bar should be filled
     const filledLength = Math.round(size * percent);
-    
+
     // Ensure filledLength is within bounds
     const boundedFilledLength = Math.min(Math.max(0, filledLength), size);
-    
+
     // Create the progress bar
     let progressBar = '';
     if (boundedFilledLength === 0) {
@@ -36,9 +36,10 @@ module.exports = {
       progressBar = line.repeat(size - 1) + slider;
     } else {
       // Somewhere in the middle
-      progressBar = line.repeat(boundedFilledLength - 1) + slider + line.repeat(size - boundedFilledLength);
+      progressBar =
+        line.repeat(boundedFilledLength - 1) + slider + line.repeat(size - boundedFilledLength);
     }
-    
+
     return progressBar;
   },
 };

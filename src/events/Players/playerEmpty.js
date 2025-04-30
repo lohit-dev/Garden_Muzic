@@ -17,16 +17,25 @@ module.exports = {
     if (defaultPlaylist) {
       try {
         client.logger.log(`Playing default playlist in guild ${player.guild}`, 'log');
-        const result = await player.search(defaultPlaylist.PlaylistUrl, {
-          name: client.user.username,
+        // Use client.manager.search instead of player.search for better Spotify handling
+        const result = await client.manager.search(defaultPlaylist.PlaylistUrl, {
+          requester: client.user,
         });
+
         if (result.tracks.length) {
-          for (const track of result.tracks) {
-            player.queue.add(track);
-          }
+          // Clear the queue before adding new tracks to prevent duplicates
+          player.queue.clear();
+
+          // Add all tracks at once for better performance
+          player.queue.add(result.tracks);
+
           // Set the player to loop the queue automatically
           await player.setLoop('queue');
-          player.play();
+
+          // Start playing if not already playing
+          if (!player.playing && !player.paused) {
+            player.play();
+          }
 
           client.channels.cache
             .get(player.text)
@@ -64,7 +73,9 @@ module.exports = {
 
     try {
       message = await channel.messages.fetch(data.Message, { cache: true });
-    } catch (e) {}
+    } catch (e) {
+      console.error(e);
+    }
 
     if (!message) return;
     await message

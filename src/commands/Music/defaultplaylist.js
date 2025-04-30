@@ -17,7 +17,11 @@ module.exports = {
   execute: async (message, args, client, prefix) => {
     // Check if the argument is a valid Spotify playlist URL
     const playlistUrl = args[0];
-    if (!playlistUrl.includes('spotify.com/playlist/')) {
+    if (
+      args[0].toLowerCase() !== 'disable' &&
+      args[0].toLowerCase() !== 'enable' &&
+      !playlistUrl.includes('spotify.com/playlist/')
+    ) {
       return message.reply({
         embeds: [
           new MessageEmbed()
@@ -82,14 +86,21 @@ module.exports = {
         let data247 = await db247.findOne({ Guild: message.guild.id });
         if (!data247) {
           // Make sure all required fields are present
-          if (!player.guild || !player.text || !player.voice) {
+          if (!message.guild.id || !message.channel.id || !message.member.voice.channel.id) {
             console.error('Missing required fields for 24/7 mode');
-            console.log('Guild:', player.guild, 'TextId:', player.text, 'VoiceId:', player.voice);
+            console.log(
+              'Guild:',
+              message.guild.id,
+              'TextId:',
+              message.channel.id,
+              'VoiceId:',
+              message.member.voice.channel.id
+            );
           } else {
             data247 = new db247({
-              Guild: player.guild,
-              TextId: player.text,
-              VoiceId: player.voice,
+              Guild: message.guild.id,
+              TextId: message.channel.id,
+              VoiceId: message.member.voice.channel.id,
             });
             await data247.save();
           }
@@ -106,8 +117,12 @@ module.exports = {
             requester: message.author,
           });
           if (result.tracks.length) {
+            // Clear the queue before adding tracks
+            player.queue.clear();
             // Add all tracks at once for better performance
             player.queue.add(result.tracks);
+            // Set the player to loop the queue automatically
+            await player.setLoop('queue');
             player.play();
           }
         } catch (error) {
@@ -143,14 +158,21 @@ module.exports = {
       let data247 = await db247.findOne({ Guild: message.guild.id });
       if (!data247) {
         // Make sure all required fields are present
-        if (!player.guild || !player.text || !player.voice) {
+        if (!message.guild.id || !message.channel.id || !message.member.voice.channel.id) {
           console.error('Missing required fields for 24/7 mode');
-          console.log('Guild:', player.guild, 'TextId:', player.text, 'VoiceId:', player.voice);
+          console.log(
+            'Guild:',
+            message.guild.id,
+            'TextId:',
+            message.channel.id,
+            'VoiceId:',
+            message.member.voice.channel.id
+          );
         } else {
           data247 = new db247({
-            Guild: player.guild,
-            TextId: player.text,
-            VoiceId: player.voice,
+            Guild: message.guild.id,
+            TextId: message.channel.id,
+            VoiceId: message.member.voice.channel.id,
           });
           await data247.save();
         }

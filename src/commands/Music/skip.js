@@ -16,7 +16,7 @@ module.exports = {
   sameVoiceChannel: true,
   execute: async (message, args, client, prefix) => {
     const player = client.manager.players.get(message.guild.id);
-    
+
     // Improved check for player state with Kazagumo 3.2.2
     if (!player || !player.queue || !player.current) {
       let thing = new MessageEmbed().setColor('RED').setDescription('There is no music playing.');

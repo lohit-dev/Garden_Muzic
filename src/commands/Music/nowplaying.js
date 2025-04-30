@@ -17,16 +17,18 @@ module.exports = {
   sameVoiceChannel: false,
   execute: async (message, args, client, prefix) => {
     const player = client.manager.players.get(message.guild.id);
-    
+
     // Improved check for player state with Kazagumo 3.2.2
     if (!player || !player.current) {
       let thing = new MessageEmbed().setColor('RED').setDescription('There is no music playing.');
       return message.channel.send({ embeds: [thing] });
     }
-    
+
     // Double check that we have a valid player state
     if (!player.playing && !player.paused) {
-      let thing = new MessageEmbed().setColor('RED').setDescription('Player is in an invalid state. Try using the play command again.');
+      let thing = new MessageEmbed()
+        .setColor('RED')
+        .setDescription('Player is in an invalid state. Try using the play command again.');
       return message.channel.send({ embeds: [thing] });
     }
 
