@@ -9,16 +9,20 @@ module.exports = {
       const SlashCommands = client.slashCommands.get(interaction.commandName);
       if (!SlashCommands) return;
 
-      if (!interaction.guild.me.permissions.has(Permissions.FLAGS.SEND_MESSAGES))
+      // Check if interaction has a guild and the guild is available
+      if (!interaction.guild) return;
+      
+      // Use guild.members.me instead of guild.me (which is deprecated)
+      if (!interaction.guild.members.me.permissions.has(Permissions.FLAGS.SEND_MESSAGES))
         return await interaction.user.dmChannel
           .send({
-            content: `I don't have **\`SEND_interactionS\`** permission in <#${interaction.channelId}> to execute this **\`${SlashCommands.name}\`** command.`,
+            content: `I don't have **\`SEND_MESSAGES\`** permission in <#${interaction.channelId}> to execute this **\`${SlashCommands.name}\`** command.`,
           })
           .catch(() => {});
 
-      if (!interaction.guild.me.permissions.has(Permissions.FLAGS.VIEW_CHANNEL)) return;
+      if (!interaction.guild.members.me.permissions.has(Permissions.FLAGS.VIEW_CHANNEL)) return;
 
-      if (!interaction.guild.me.permissions.has(Permissions.FLAGS.EMBED_LINKS))
+      if (!interaction.guild.members.me.permissions.has(Permissions.FLAGS.EMBED_LINKS))
         return await interaction
           .reply({
             content: `I don't have **\`EMBED_LINKS\`** permission to execute this **\`${SlashCommands.name}\`** command.`,
@@ -40,7 +44,7 @@ module.exports = {
           ephemeral: true,
         });
       }
-      if (!interaction.guild.me.permissions.has(SlashCommands.userPrams || [])) {
+      if (!interaction.guild.members.me.permissions.has(SlashCommands.userPrams || [])) {
         return await interaction.reply({
           content: `You Need this \`${SlashCommands.userPrams.join(
             ', '
@@ -57,8 +61,8 @@ module.exports = {
           .catch(() => {});
       }
       if (SlashCommands.sameVoiceChannel) {
-        if (interaction.guild.me.voice.channel) {
-          if (interaction.guild.me.voice.channelId !== interaction.member.voice.channelId) {
+        if (interaction.guild.members.me.voice.channel) {
+          if (interaction.guild.members.me.voice.channelId !== interaction.member.voice.channelId) {
             return await interaction
               .reply({
                 content: `You must be in the same channel as ${interaction.client.user}`,
