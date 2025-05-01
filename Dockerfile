@@ -11,6 +11,5 @@ RUN npm install --production
 # Copy the rest of the source code
 COPY . .
 
-# Set environment variables (hardcoded for testing)
 # Start the bot
 CMD ["node", "src/index.js"]
