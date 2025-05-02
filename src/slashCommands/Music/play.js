@@ -27,7 +27,12 @@ module.exports = {
     await interaction.deferReply({
       ephemeral: false,
     });
-    if (!interaction.guild.me.permissions.has([Permissions.FLAGS.CONNECT, Permissions.FLAGS.SPEAK]))
+    if (
+      !interaction.guild.members.me.permissions.has([
+        Permissions.FLAGS.CONNECT,
+        Permissions.FLAGS.SPEAK,
+      ])
+    )
       return interaction.editReply({
         embeds: [
           new MessageEmbed()
@@ -39,7 +44,7 @@ module.exports = {
       });
     const { channel } = interaction.member.voice;
     if (
-      !interaction.guild.me
+      !interaction.guild.members.me
         .permissionsIn(channel)
         .has([Permissions.FLAGS.CONNECT, Permissions.FLAGS.SPEAK])
     )

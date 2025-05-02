@@ -24,7 +24,9 @@ module.exports = {
 
     try {
       message = await channel.messages.fetch(data.Message, { cache: true });
-    } catch (e) {}
+    } catch (e) {
+      console.log(e);
+    }
 
     if (!message) return;
     let disabled = true;

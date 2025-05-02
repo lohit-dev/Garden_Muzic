@@ -46,12 +46,12 @@ module.exports = {
         color
       );
     if (
-      interaction.guild.me.voice.channel &&
-      interaction.guild.me.voice.channelId !== interaction.member.voice.channelId
+      interaction.guild.members.me.voice.channel &&
+      interaction.guild.members.me.voice.channelId !== interaction.member.voice.channelId
     )
       return await buttonReply(
         interaction,
-        `You are not connected to ${interaction.guild.me.voice.channel} to use this buttons.`,
+        `You are not connected to ${interaction.guild.members.me.voice.channel} to use this buttons.`,
         color
       );
     const player = client.manager.players.get(interaction.guildId);
@@ -67,7 +67,9 @@ module.exports = {
       message = await interaction.channel.messages.fetch(data.Message, {
         cache: true,
       });
-    } catch (e) {}
+    } catch (e) {
+      console.error(e);
+    }
 
     let icon =
       `${

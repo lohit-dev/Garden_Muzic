@@ -11,8 +11,7 @@ module.exports = {
 
       // Check if interaction has a guild and the guild is available
       if (!interaction.guild) return;
-      
-      // Use guild.members.me instead of guild.me (which is deprecated)
+
       if (!interaction.guild.members.me.permissions.has(Permissions.FLAGS.SEND_MESSAGES))
         return await interaction.user.dmChannel
           .send({

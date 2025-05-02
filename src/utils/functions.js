@@ -97,7 +97,7 @@ async function playerhandler(query, player, message) {
     if (d) m = await message.channel.messages.fetch(d.Message, { cache: true });
   } catch (e) {}
 
-  if (!message.guild.me.voice.channel || player.state !== 'CONNECTED')
+  if (!message.guild.members.me.voice.channel || player.state !== 'CONNECTED')
     player = await message.client.manager.createPlayer({
       guildId: message.guild.id,
       voiceId: message.member.voice.channel.id,

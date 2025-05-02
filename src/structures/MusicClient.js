@@ -72,6 +72,9 @@ class MusicBot extends Client {
       },
     ];
 
+    // Log node configuration for debugging
+    this.logger.log(`Initializing Lavalink node: ${JSON.stringify(nodes[0])}`, 'log');
+
     this.manager = new Kazagumo(
       {
         defaultSearchEngine: 'youtube',
@@ -84,22 +87,49 @@ class MusicBot extends Client {
           new Spotify(spotifyOptions),
           new Plugins.PlayerMoved(this), // Add PlayerMoved plugin for better voice channel handling
         ],
+        // Add state tracking to help with debugging
+        playerOptions: {
+          onEmptyQueue: {
+            autoDestroy: false, // Don't destroy player when queue is empty
+            trackEndDelay: 60000, // Wait 60 seconds before destroying player
+          },
+          // Improved player options
+          requesterTransformer: (track, requester) => {
+            if (track.requester) return track;
+            track.requester = requester;
+            return track;
+          },
+        },
       },
       new Connectors.DiscordJS(this),
       nodes,
       shoukakuOptions
     );
 
+    // Add event listeners for debugging
+    this.manager.shoukaku.on('ready', name => this.logger.log(`Lavalink ${name}: Ready!`, 'ready'));
+    this.manager.shoukaku.on('error', (name, error) =>
+      this.logger.log(`Lavalink ${name}: Error Caught - ${error.message}`, 'error')
+    );
+    this.manager.shoukaku.on('close', (name, code, reason) =>
+      this.logger.log(`Lavalink ${name}: Closed - ${code} ${reason || 'No reason'}`, 'warn')
+    );
+    this.manager.shoukaku.on('disconnect', (name, moved) =>
+      this.logger.log(`Lavalink ${name}: Disconnected ${moved ? '(moved)' : ''}`, 'warn')
+    );
+
     return this.manager;
   }
+
   _loadClientEvents() {
     readdirSync('./src/events/Client').forEach(file => {
       const event = require(`../events/Client/${file}`);
       let eventName = file.split('.')[0];
-      this.logger.log(`Loading Events Client ${eventName}`, 'event');
+      this.logger.log(`Loading Events Client ${eventName}`, 'log');
       this.on(event.name, (...args) => event.run(this, ...args));
     });
   }
+
   /**
    * Node Manager Events
    */
@@ -107,7 +137,7 @@ class MusicBot extends Client {
     readdirSync('./src/events/Node').forEach(file => {
       const event = require(`../events/Node/${file}`);
       let eventName = file.split('.')[0];
-      this.logger.log(`Loading Events Lavalink  ${eventName}`, 'event');
+      this.logger.log(`Loading Events Lavalink  ${eventName}`, 'log');
       this.manager.shoukaku.on(event.name, (...args) => event.run(this, ...args));
     });
   }
@@ -118,10 +148,11 @@ class MusicBot extends Client {
     readdirSync('./src/events/Players').forEach(file => {
       const event = require(`../events/Players/${file}`);
       let eventName = file.split('.')[0];
-      this.logger.log(`Loading Events Players ${eventName}`, 'event');
+      this.logger.log(`Loading Events Players ${eventName}`, 'log');
       this.manager.on(event.name, (...args) => event.run(this, ...args));
     });
   }
+
   /**
    * Import all commands
    */
@@ -138,6 +169,7 @@ class MusicBot extends Client {
       }
     });
   }
+
   /**
    * SlashCommands
    */
@@ -166,17 +198,18 @@ class MusicBot extends Client {
           );
 
         this.slashCommands.set(slashCommand.name, slashCommand);
-        this.logger.log(`[ / ] Slash Command Loaded: ${slashCommand.name}`, 'cmd');
+        this.logger.log(`[ / ] Slash Command Loaded: ${slashCommand.name}`, 'log');
         data.push(slashCommand);
       }
     });
     this.on('ready', async () => {
       await this.application.commands
         .set(data)
-        .then(() => this.logger.log('Successfully Loaded All Slash Commands', 'cmd'))
+        .then(() => this.logger.log('Successfully Loaded All Slash Commands', 'log'))
         .catch(e => console.log(e));
     });
   }
+
   async _connectMongodb() {
     const dbOptions = {
       useNewUrlParser: true,

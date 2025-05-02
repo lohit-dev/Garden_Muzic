@@ -17,20 +17,20 @@ module.exports = {
     const embed = new MessageEmbed()
       .setThumbnail(guild.iconURL({ dynamic: true, size: 1024 }))
       .setTitle('📥 Joined a Guild !!')
-      .addField('Name', `\`${guild.name}\``)
-      .addField('ID', `\`${guild.id}\``)
-      .addField(
+      .addFields('Name', `\`${guild.name}\``)
+      .addFields('ID', `\`${guild.id}\``)
+      .addFields(
         'Owner',
         `\`${guild.members.cache.get(own.id) ? guild.members.cache.get(own.id).user.tag : 'Unknown user'}\` ${own.id}\``
       )
-      .addField('Member Count', `\`${guild.memberCount}\` Members`)
-      .addField('Creation Date', `\`${moment.utc(guild.createdAt).format('DD/MMM/YYYY')}\``)
-      .addField(
+      .addFields('Member Count', `\`${guild.memberCount}\` Members`)
+      .addFields('Creation Date', `\`${moment.utc(guild.createdAt).format('DD/MMM/YYYY')}\``)
+      .addFields(
         'Guild Invite',
         `[Here is ${guild.name} invite ](https://discord.gg/${invite.code})`
       )
       .setColor(client.embedColor)
-      .addField(`${client.user.username}'s Server Count`, `\`${client.guilds.cache.size}\` Severs`)
+      .addFields(`${client.user.username}'s Server Count`, `\`${client.guilds.cache.size}\` Severs`)
       .setTimestamp();
     channel.send({ embeds: [embed] });
   },

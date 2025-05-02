@@ -9,6 +9,7 @@ COPY package*.json ./
 RUN npm install --production
 
 # Copy the rest of the source code
+ENV NODE_ENV=production
 COPY . .
 
 # Start the bot
